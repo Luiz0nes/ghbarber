@@ -14,13 +14,98 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      appointments: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          service_id: string
+          starts_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          service_id: string
+          starts_at: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          service_id?: string
+          starts_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id: string
+          phone?: string | null
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+        }
+        Relationships: []
+      }
+      services: {
+        Row: {
+          description: string | null
+          duration_minutes: number
+          id: string
+          name: string
+          price: number
+          sort_order: number
+        }
+        Insert: {
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          name: string
+          price: number
+          sort_order?: number
+        }
+        Update: {
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          name?: string
+          price?: number
+          sort_order?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_busy_slots: { Args: { day: string }; Returns: string[] }
     }
     Enums: {
       [_ in never]: never
