@@ -59,6 +59,24 @@ export type Database = {
           },
         ]
       }
+      days_off: {
+        Row: {
+          created_at: string
+          day: string
+          note: string | null
+        }
+        Insert: {
+          created_at?: string
+          day: string
+          note?: string | null
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          note?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -125,6 +143,27 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      work_hours: {
+        Row: {
+          close_min: number
+          is_open: boolean
+          open_min: number
+          weekday: number
+        }
+        Insert: {
+          close_min?: number
+          is_open?: boolean
+          open_min?: number
+          weekday: number
+        }
+        Update: {
+          close_min?: number
+          is_open?: boolean
+          open_min?: number
+          weekday?: number
         }
         Relationships: []
       }
