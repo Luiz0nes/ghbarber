@@ -26,11 +26,16 @@ function AuthPage() {
   const [form, setForm] = useState({ name: "", phone: "", email: "", password: "" });
 
   useEffect(() => {
+    const go = async () => {
+      const { data: isBarber } = await supabase.rpc("is_barbeiro");
+      if (isBarber) navigate({ to: "/painel" });
+      else navigate({ to: "/agendar" });
+    };
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/agendar" });
+      if (data.session) void go();
     });
     const { data } = supabase.auth.onAuthStateChange((_e, session) => {
-      if (session) navigate({ to: "/agendar" });
+      if (session) void go();
     });
     return () => data.subscription.unsubscribe();
   }, [navigate]);
