@@ -21,7 +21,7 @@ export function availableSlots(dateStr: string, duration: number, busy: Set<numb
   return all.filter((s, i) => {
     if (new Date(s).getTime() <= now) return false;
     if (i + need > all.length) return false;
-    for (let k = 0; k < need; k++) if (busy.has(new Date(all[i + k]).getTime())) return false;
+    for (let k = 0; k < need; k++) if (busy.has(new Date(all[i + k]!).getTime())) return false;
     return true;
   });
 }
