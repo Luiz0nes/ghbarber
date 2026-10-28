@@ -91,7 +91,8 @@ function Index() {
       </section>
 
       <footer className="px-5 py-8 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} GH Barbearia · <a href={IG} className="hover:text-primary">Instagram</a>
+        © {new Date().getFullYear()} GH Barbearia · <a href={IG} className="hover:text-primary">Instagram</a> ·{" "}
+        <Link to="/painel" className="hover:text-primary">Área do barbeiro</Link>
       </footer>
     </main>
   );

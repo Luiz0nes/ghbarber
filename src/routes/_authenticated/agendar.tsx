@@ -65,6 +65,10 @@ function Agendar() {
       return new Set((data as unknown as string[]).map((s) => new Date(s).getTime()));
     },
   });
+  const { data: isBarber } = useQuery({
+    queryKey: ["isBarber"],
+    queryFn: async () => (await supabase.rpc("is_barbeiro")).data === true,
+  });
   const { data: mine } = useQuery({
     queryKey: ["mine"],
     queryFn: async () =>
@@ -108,7 +112,12 @@ function Agendar() {
     <main className="mx-auto max-w-3xl px-5 py-6 pb-32">
       <header className="flex items-center justify-between">
         <Link to="/" className="font-display text-4xl">GH<span className="text-primary">.</span></Link>
-        <Button variant="ghost" size="sm" onClick={logout}><LogOut /> Sair</Button>
+        <div className="flex items-center gap-1">
+          {isBarber && (
+            <Button asChild variant="outline" size="sm"><Link to="/painel">Painel</Link></Button>
+          )}
+          <Button variant="ghost" size="sm" onClick={logout}><LogOut /> Sair</Button>
+        </div>
       </header>
 
       <h1 className="mt-8 text-5xl">Olá{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}</h1>
