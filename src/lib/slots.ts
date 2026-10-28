@@ -14,6 +14,27 @@ export function daySlots(dateStr: string): string[] {
   return out;
 }
 
+/** "YYYY-MM-DD" in São Paulo time. */
+export function fmtDayKey(d: Date): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(d);
+}
+
+/** Next `count` open days, as { key: "YYYY-MM-DD", date }. */
+export function upcomingOpenDays(count = 12): { key: string; date: Date }[] {
+  const out: { key: string; date: Date }[] = [];
+  for (let i = 0; out.length < count && i < 40; i++) {
+    const key = fmtDayKey(new Date(Date.now() + i * 86400000));
+    const date = new Date(key + "T12:00:00-03:00");
+    if (OPEN_DAYS.includes(date.getUTCDay())) out.push({ key, date });
+  }
+  return out;
+}
+
+/** UTC ISO instant for the start of a São Paulo calendar day. */
+export function dayStartIso(key: string): string {
+  return new Date(key + "T00:00:00-03:00").toISOString();
+}
+
 /** Returns the slots (ISO) where a service of `duration` minutes fits, given busy slot timestamps (ms). */
 export function availableSlots(dateStr: string, duration: number, busy: Set<number>, now = Date.now()): string[] {
   const all = daySlots(dateStr);
