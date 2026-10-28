@@ -30,13 +30,13 @@ describe("acesso ao painel do barbeiro", () => {
     rpc.mockResolvedValue({ data: false, error: null });
     const thrown = await guard();
     expect(isRedirect(thrown)).toBe(true);
-    expect((thrown as { to?: string }).to).toBe("/agendar");
+    expect((thrown as { options?: { to?: string } }).options?.to).toBe("/agendar");
   });
 
   it("expulsa também se a checagem de papel falhar", async () => {
     rpc.mockResolvedValue({ data: true, error: new Error("boom") });
     const thrown = await guard();
     expect(isRedirect(thrown)).toBe(true);
-    expect((thrown as { to?: string }).to).toBe("/agendar");
+    expect((thrown as { options?: { to?: string } }).options?.to).toBe("/agendar");
   });
 });
