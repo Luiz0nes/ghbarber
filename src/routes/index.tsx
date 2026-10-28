@@ -73,7 +73,7 @@ function Index() {
                 <h3 className="text-3xl">{s.name}</h3>
                 <p className="text-sm text-muted-foreground">{s.description} · {s.duration_minutes} min</p>
               </div>
-              <span className="font-display text-3xl text-primary">R$ {Number(s.price).toFixed(0)}</span>
+              <span className="shrink-0 whitespace-nowrap font-display text-3xl text-primary">R$ {Number(s.price).toFixed(0)}</span>
             </li>
           ))}
         </ul>
