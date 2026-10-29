@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { dayStartIso, fmtDayKey, upcomingOpenDays } from "@/lib/slots";
 import { cn } from "@/lib/utils";
+import { WorkSchedule } from "@/components/WorkSchedule";
 
 export const Route = createFileRoute("/_authenticated/painel")({
   head: () => ({
@@ -237,6 +238,8 @@ function Painel() {
           {showCancelled ? "Esconder cancelados" : "Ver cancelados"}
         </button>
       )}
+
+      <WorkSchedule />
 
       <section className="mt-14 border-t border-border pt-8">
         <h2 className="text-3xl">Quem tem acesso</h2>

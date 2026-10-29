@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { availableSlots, OPEN_DAYS } from "@/lib/slots";
+import { availableSlots, upcomingOpenDays } from "@/lib/slots";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/agendar")({
@@ -33,16 +33,20 @@ function Agendar() {
   const [slot, setSlot] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
+  const { data: hours } = useQuery({
+    queryKey: ["work_hours"],
+    queryFn: async () => (await supabase.from("work_hours").select("*")).data ?? [],
+  });
+  const { data: off } = useQuery({
+    queryKey: ["days_off"],
+    queryFn: async () => (await supabase.from("days_off").select("day")).data ?? [],
+  });
   const days = useMemo(() => {
-    const out: { key: string; date: Date }[] = [];
-    for (let i = 0; out.length < 12 && i < 30; i++) {
-      const d = new Date(Date.now() + i * 86400000);
-      const key = fmtDate(d);
-      const wd = new Date(key + "T12:00:00-03:00").getUTCDay();
-      if (OPEN_DAYS.includes(wd)) out.push({ key, date: new Date(key + "T12:00:00-03:00") });
-    }
-    return out;
-  }, []);
+    if (!hours) return [];
+    const offSet = new Set((off ?? []).map((d) => d.day));
+    return upcomingOpenDays(12, (key, wd) => !offSet.has(key) && !!hours.find((h) => h.weekday === wd && h.is_open));
+  }, [hours, off]);
+  const dayHours = day ? hours?.find((h) => h.weekday === new Date(day + "T12:00:00-03:00").getUTCDay()) : undefined;
 
   const { data: profile } = useQuery({
     queryKey: ["profile"],
@@ -77,7 +81,7 @@ function Agendar() {
   });
 
   const service = services?.find((s) => s.id === serviceId);
-  const slots = day && service && busy ? availableSlots(day, service.duration_minutes, busy) : [];
+  const slots = day && service && busy ? availableSlots(day, service.duration_minutes, busy, Date.now(), dayHours) : [];
 
   const book = async () => {
     if (!service || !slot) return;
