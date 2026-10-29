@@ -56,22 +56,44 @@
   --border: oklch(0.32 0.015 65);
   --input: oklch(0.32 0.015 65);
   --ring: oklch(0.76 0.13 70);
-  --gradient-fade: linear-gradient(180deg, transparent 0%, color-mix(in oklab, var(--background) 70%, transparent) 55%, var(--background) 100%);
+  --gradient-fade: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in oklab, var(--background) 70%, transparent) 55%,
+    var(--background) 100%
+  );
   --shadow-glow: 0 10px 40px -12px color-mix(in oklab, var(--primary) 55%, transparent);
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
+  * {
+    border-color: var(--color-border);
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
   }
-  h1, h2, h3 { font-family: var(--font-display); letter-spacing: 0.02em; line-height: 0.95; }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: 0.02em;
+    line-height: 0.95;
+  }
 }
 
-@utility bg-fade { background-image: var(--gradient-fade); }
-@utility shadow-glow { box-shadow: var(--shadow-glow); }
+@utility bg-fade {
+  background-image: var(--gradient-fade);
+}
+@utility shadow-glow {
+  box-shadow: var(--shadow-glow);
+}
 @utility stripe-pole {
-  background-image: repeating-linear-gradient(-45deg, var(--pole) 0 8px, var(--foreground) 8px 16px, var(--primary) 16px 24px);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--pole) 0 8px,
+    var(--foreground) 8px 16px,
+    var(--primary) 16px 24px
+  );
 }

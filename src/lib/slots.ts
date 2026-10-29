@@ -24,12 +24,16 @@ export function fmtDayKey(d: Date): string {
 }
 
 /** Next `count` open days, as { key: "YYYY-MM-DD", date }. */
-export function upcomingOpenDays(count = 12, isOpen?: (key: string, weekday: number) => boolean): { key: string; date: Date }[] {
+export function upcomingOpenDays(
+  count = 12,
+  isOpen?: (key: string, weekday: number) => boolean,
+): { key: string; date: Date }[] {
   const out: { key: string; date: Date }[] = [];
   for (let i = 0; out.length < count && i < 60; i++) {
     const key = fmtDayKey(new Date(Date.now() + i * 86400000));
     const date = new Date(key + "T12:00:00-03:00");
-    if (isOpen ? isOpen(key, date.getUTCDay()) : OPEN_DAYS.includes(date.getUTCDay())) out.push({ key, date });
+    if (isOpen ? isOpen(key, date.getUTCDay()) : OPEN_DAYS.includes(date.getUTCDay()))
+      out.push({ key, date });
   }
   return out;
 }
@@ -40,7 +44,13 @@ export function dayStartIso(key: string): string {
 }
 
 /** Returns the slots (ISO) where a service of `duration` minutes fits, given busy slot timestamps (ms). */
-export function availableSlots(dateStr: string, duration: number, busy: Set<number>, now = Date.now(), hours?: DayHours): string[] {
+export function availableSlots(
+  dateStr: string,
+  duration: number,
+  busy: Set<number>,
+  now = Date.now(),
+  hours?: DayHours,
+): string[] {
   const all = daySlots(dateStr, hours);
   const need = Math.ceil(duration / SLOT_MIN);
   return all.filter((s, i) => {
