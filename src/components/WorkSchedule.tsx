@@ -35,7 +35,7 @@ export function WorkSchedule() {
   const patch = (i: number, p: Partial<H>) => setRows((r) => r.map((x) => (x.weekday === i ? { ...x, ...p } : x)));
 
   const save = async () => {
-    if (rows.some((r) => r.is_open && r.close_min <= r.open_min)) return toast.error("O fechamento precisa ser depois da abertura.");
+    if (rows.some((r) => r.is_open && r.close_min <= r.open_min)) { toast.error("O fechamento precisa ser depois da abertura."); return; }
     setSaving(true);
     const { error } = await supabase.from("work_hours").upsert(rows);
     setSaving(false);
@@ -47,7 +47,7 @@ export function WorkSchedule() {
   const addOff = async (e: React.FormEvent) => {
     e.preventDefault();
     const { error } = await supabase.from("days_off").upsert({ day: offDay, note: offNote || null });
-    if (error) return toast.error("Não foi possível salvar a folga.");
+    if (error) { toast.error("Não foi possível salvar a folga."); return; }
     toast.success("Folga marcada.");
     setOffDay(""); setOffNote("");
     qc.invalidateQueries({ queryKey: ["days_off"] });
