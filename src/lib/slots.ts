@@ -4,9 +4,13 @@ export const OPEN_HOUR = 9;
 export const CLOSE_HOUR = 19;
 export const SLOT_MIN = 30;
 
-export function daySlots(dateStr: string): string[] {
+export type DayHours = { open_min: number; close_min: number };
+
+export function daySlots(dateStr: string, hours?: DayHours): string[] {
   const out: string[] = [];
-  for (let m = OPEN_HOUR * 60; m < CLOSE_HOUR * 60; m += SLOT_MIN) {
+  const from = hours?.open_min ?? OPEN_HOUR * 60;
+  const to = hours?.close_min ?? CLOSE_HOUR * 60;
+  for (let m = from; m < to; m += SLOT_MIN) {
     const hh = String(Math.floor(m / 60)).padStart(2, "0");
     const mm = String(m % 60).padStart(2, "0");
     out.push(`${dateStr}T${hh}:${mm}:00-03:00`);
@@ -20,12 +24,12 @@ export function fmtDayKey(d: Date): string {
 }
 
 /** Next `count` open days, as { key: "YYYY-MM-DD", date }. */
-export function upcomingOpenDays(count = 12): { key: string; date: Date }[] {
+export function upcomingOpenDays(count = 12, isOpen?: (key: string, weekday: number) => boolean): { key: string; date: Date }[] {
   const out: { key: string; date: Date }[] = [];
-  for (let i = 0; out.length < count && i < 40; i++) {
+  for (let i = 0; out.length < count && i < 60; i++) {
     const key = fmtDayKey(new Date(Date.now() + i * 86400000));
     const date = new Date(key + "T12:00:00-03:00");
-    if (OPEN_DAYS.includes(date.getUTCDay())) out.push({ key, date });
+    if (isOpen ? isOpen(key, date.getUTCDay()) : OPEN_DAYS.includes(date.getUTCDay())) out.push({ key, date });
   }
   return out;
 }
@@ -36,8 +40,8 @@ export function dayStartIso(key: string): string {
 }
 
 /** Returns the slots (ISO) where a service of `duration` minutes fits, given busy slot timestamps (ms). */
-export function availableSlots(dateStr: string, duration: number, busy: Set<number>, now = Date.now()): string[] {
-  const all = daySlots(dateStr);
+export function availableSlots(dateStr: string, duration: number, busy: Set<number>, now = Date.now(), hours?: DayHours): string[] {
+  const all = daySlots(dateStr, hours);
   const need = Math.ceil(duration / SLOT_MIN);
   return all.filter((s, i) => {
     if (new Date(s).getTime() <= now) return false;
